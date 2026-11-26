@@ -15,14 +15,6 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 
-mongoose.connect(process.env.MONGO_URL)
-    .then(() => {
-        console.log("Mongo Connected");
-    })
-    .catch((err) => {
-        console.log(err);
-    });
-
 // Home Route
 app.get("/", (req, res) => {
     res.send("Backend Running");
@@ -36,6 +28,21 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 
-app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on port ${PORT}`);
-});
+const startServer = async () => {
+    try {
+        await mongoose.connect(process.env.MONGO_URL);
+
+        console.log("MongoDB Connected Successfully");
+
+        app.listen(PORT, "0.0.0.0", () => {
+            console.log(`Server running on port ${PORT}`);
+        });
+
+    } catch (error) {
+        console.error("MongoDB Connection Failed:", error.message);
+        process.exit(1);
+    }
+};
+
+startServer();
+
