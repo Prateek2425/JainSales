@@ -1,0 +1,21 @@
+signup 
+{
+    "name":"Aditya",
+    "email":"aditya@gmail.com",
+    "password":"123445678"
+}
+
+login : 
+{
+    "email":"aditya@gmail.com",
+    "password":"123445678" 
+}
+
+addProduct : 
+{
+   "name":"Samsung",
+    "description":"qwertyugdbssb fb",
+    "price":123445678,
+    "quantity":12
+}
+
