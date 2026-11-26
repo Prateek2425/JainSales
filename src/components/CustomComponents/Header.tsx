@@ -7,8 +7,12 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
+import { DrawerActions, useNavigation } from '@react-navigation/native';
 
 import { Theme } from '../../theme/constants';
+import { goBack, navigate } from '../../Navigation/RootNavigation';
+import AtomText from '../atoms/AtomText';
+import { useAppSelector } from '../../hooks';
 
 interface HeaderProps {
     userName?: string;
@@ -16,8 +20,8 @@ interface HeaderProps {
     notificationCount?: number;
     onMenuPress?: () => void;
     onNotificationPress?: () => void;
-    onWishlistPress?: () => void;
-    onCartPress?: () => void;
+    back?: boolean,
+    title?: string
 }
 
 const Header = ({
@@ -26,49 +30,69 @@ const Header = ({
     notificationCount = 3,
     onMenuPress,
     onNotificationPress,
-    onWishlistPress,
-    onCartPress,
+    back,
+    title
 }: HeaderProps) => {
+    const { cartItem } = useAppSelector((state) => state?.wishList)
+    const navigation = useNavigation();
+    
+    const onWishlistPress = () => {
+        navigate("WishListScreen")
+    }
+
+    const onCartPress = () => {
+        navigate("CartScreen")
+    }
+
     return (
         <View style={styles.container}>
             {/* Left */}
             <View style={styles.leftContainer}>
-                <TouchableOpacity onPress={onMenuPress}>
+                <TouchableOpacity
+                    onPress={() => {
+                        if (back) {
+                            goBack()
+                        } else {
+                            navigation.dispatch(
+                                DrawerActions.openDrawer()
+                            )
+                        }
+                    }}
+                >
                     <Octicons
-                        name="three-bars"
+                        name={back ? "arrow-left" : "three-bars"}
                         size={26}
                         color="#222"
                     />
                 </TouchableOpacity>
-
                 <View style={styles.userContainer}>
-                    <Text style={styles.welcomeText}>Hello Prateek</Text>
-
-                    <Text style={styles.userName}>
-                        {userName}
-                    </Text>
+                    {title !== undefined ? (<AtomText fontSize={18} fontWeight='600' title={title} />)
+                        :
+                        <>
+                            <Text style={styles.welcomeText}>Hello Prateek</Text>
+                            <Text style={styles.userName}>
+                                {userName}
+                            </Text>
+                        </>
+                    }
                 </View>
             </View>
 
-            {/* Right */}
-            <View style={styles.rightContainer}>
-                {/* <IconButton
-                    icon="notifications-outline"
-                    badge={notificationCount}
-                    onPress={onNotificationPress}
-                /> */}
+            {back ? null :
+                <View style={styles.rightContainer}>
+                    <IconButton
+                        icon="heart-outline"
+                        onPress={onWishlistPress}
+                    />
 
-                <IconButton
-                    icon="heart-outline"
-                    onPress={onWishlistPress}
-                />
+                    <IconButton
+                        icon="cart-outline"
+                        badge={cartItem}
+                        onPress={onCartPress}
+                    />
+                </View>
+            }
 
-                <IconButton
-                    icon="cart-outline"
-                    badge={cartCount}
-                    onPress={onCartPress}
-                />
-            </View>
         </View>
     );
 };

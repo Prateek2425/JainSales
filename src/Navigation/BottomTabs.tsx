@@ -3,15 +3,17 @@ import { View, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import HomeScreen from '../screen/dashboard/Home';
-import CategoryScreen from '../screen/dashboard/Home';
-import OrdersScreen from '../screen/dashboard/Home';
-import WishlistScreen from '../screen/dashboard/Home';
+import HomeScreen from '../screen/dashboard/Home/index';
+import CategoryScreen from '../screen/dashboard/Categories';
+import WishlistScreen from '../screen/dashboard/WishListScreen/index';
 import ProfileScreen from '../screen/profile';
+import Products from '../screen/dashboard/Products/Index';
+import { useAppSelector } from '../hooks';
 
 const Tab = createBottomTabNavigator();
 
 const BottomTabs = () => {
+    const { user }: any = useAppSelector((state) => state?.auth)
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -35,7 +37,7 @@ const BottomTabs = () => {
                             iconName = focused ? 'grid' : 'grid-outline';
                             break;
 
-                        case 'Orders':
+                        case 'Product':
                             iconName = focused ? 'cube' : 'cube-outline';
                             break;
 
@@ -66,12 +68,12 @@ const BottomTabs = () => {
                 name="Category"
                 component={CategoryScreen}
             />
-
-            <Tab.Screen
-                name="Orders"
-                component={OrdersScreen}
-            />
-
+            {user?.role === "Vendor" && (
+                <Tab.Screen
+                    name="Product"
+                    component={Products}
+                />
+            )}
             <Tab.Screen
                 name="Wishlist"
                 component={WishlistScreen}

@@ -14,6 +14,7 @@ interface SearchBarProps {
     placeholder?: string;
     onFilterPress?: () => void;
     onVoicePress?: () => void;
+    filter?: boolean
 }
 
 const SearchBar = ({
@@ -22,6 +23,7 @@ const SearchBar = ({
     placeholder = 'Search products...',
     onFilterPress,
     onVoicePress,
+    filter
 }: SearchBarProps) => {
     return (
         <View style={styles.container}>
@@ -40,23 +42,18 @@ const SearchBar = ({
                     style={styles.input}
                     returnKeyType="search"
                 />
-                {/* <TouchableOpacity onPress={onVoicePress}>
-                    <Ionicons
-                        name="mic-outline"
-                        size={22}
-                        color="#777"
-                    />
-                </TouchableOpacity> */}
-                <TouchableOpacity
-                    style={styles.filterButton}
-                    onPress={onFilterPress}
-                >
-                    <Ionicons
-                        name="options-outline"
-                        size={24}
-                        color="#111"
-                    />
-                </TouchableOpacity>
+                {filter && (
+                    <TouchableOpacity
+                        style={styles.filterButton}
+                        onPress={onFilterPress}
+                    >
+                        <Ionicons
+                            name="options-outline"
+                            size={24}
+                            color="#111"
+                        />
+                    </TouchableOpacity>
+                )}
             </View>
         </View>
     );
@@ -93,6 +90,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         fontSize: 14,
         color: '#222',
+        height: "100%"
     },
     filterButton: {
         borderRadius: 16,

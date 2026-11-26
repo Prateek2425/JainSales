@@ -1,77 +1,56 @@
 import React from 'react';
 import {
-    View,
-    Text,
-    Image,
     StyleSheet,
-    TouchableOpacity,
+    Pressable,
 } from 'react-native';
-
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Theme } from '../../theme/constants';
+import AtomText from '../atoms/AtomText';
+import AtomView from '../atoms/AtomView';
+import { navigate } from '../../Navigation/RootNavigation';
+import CustomImage from '../atoms/AtomImages';
+import { ProductCardProps } from '../../types';
 
-const ProductCard = ({ item }: any) => {
+const ProductCard = ({ item, showWishList, ownProduct = false }: ProductCardProps) => {
+
+    const handler = () => {
+        navigate("ProductDetailScreen", { productItem: item, showWishList, ownProduct })
+    }
     return (
-        <View style={styles.card}>
-            <Image
-                source={{ uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQQUhEpSp3X5WtIfB-h_ctKLGqZ6FpKLj0rVjjgo2Cog&s" }}
+        <Pressable onPress={handler} style={styles.card}>
+            <CustomImage
+                uri={item?.image}
                 style={styles.image}
             />
-            <TouchableOpacity style={styles.heart}>
-                <Ionicons
-                    name="heart-outline"
-                    size={22}
-                />
-            </TouchableOpacity>
-            {/* <View style={styles.discount}>
-                <Text style={styles.discountText}>
-                    {"2000"}
-                </Text>
-            </View> */}
-            <View style={{ padding: 12 }}>
-                <Text style={styles.name}>
-                    {"qwerty"}
-                </Text>
-
-                <Text style={styles.category}>
-                    {"Tshirt"}
-                </Text>
-
-                <View style={styles.priceRow}>
-
-                    <Text style={styles.price}>
-                        ₹{"200"}
-                    </Text>
-
-                    <Text style={styles.oldPrice}>
-                        ₹{"400"}
-                    </Text>
-
-                </View>
-
-                <Text style={styles.rating}>
-                    ⭐ {"4.5"}
-                </Text>
-            </View>
-        </View>
-
+            {item?.quantity === 0 && (
+                <AtomView style={{ borderTopLeftRadius: 15, padding: 8, backgroundColor: "#fff", justifyContent: "center", alignItems: "center", position: "absolute", top: 0, left: 0, borderBottomRightRadius: 12, paddingHorizontal: 16 }}>
+                    <AtomText title='Out of stock' fontSize={12} color='red' fontWeight='700' />
+                </AtomView>
+            )}
+            <AtomView style={{ padding: 12 }}>
+                <AtomText title={item?.name} style={styles.name} />
+                <AtomText title={item?.description} style={styles.category} />
+                <AtomView style={styles.priceRow}>
+                    <AtomText title={`₹${item?.price}`} style={styles.price} />
+                </AtomView>
+            </AtomView>
+        </Pressable>
     )
-
 }
 
 export default ProductCard;
 
 const styles = StyleSheet.create({
     card: {
-        width: 150,
+        width: "48%",
         borderRadius: 18,
-        marginRight: 16,
+        marginRight: 10,
         borderWidth: 1,
-        borderColor: Theme.colors.common.borderColor
+        borderColor: Theme.colors.common.borderColor,
+        marginBottom: 16
     },
     image: {
         width: '100%',
-        height: 140,
+        height: 120,
         resizeMode: 'cover',
         borderTopLeftRadius: 18,
         borderTopRightRadius: 18
@@ -83,6 +62,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         padding: 5,
         borderRadius: 15,
+        zIndex: 1
     },
     discount: {
         marginTop: 10,

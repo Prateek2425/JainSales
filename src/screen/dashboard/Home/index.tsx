@@ -1,20 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { StyleSheet, ImageBackground, Pressable, FlatList, Image, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, FlatList, View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ImgAssets from "../../assets/img-assets";
-import AtomView from "../../components/atoms/AtomView";
-import AtomText from "../../components/atoms/AtomText";
-import { Theme } from "../../theme/constants";
+import AtomView from "../../../components/atoms/AtomView";
+import { Theme } from "../../../theme/constants";
 import { useDispatch } from "react-redux";
-import { logout } from "../auth/authSlice";
-import { navigate, reset } from "../../Navigation/RootNavigation";
-import ImagePicker from "react-native-image-crop-picker";
-import { useAppSelector } from "../../hooks";
-import { getProducts } from "./dashboardThunk";
-import Header from "../../components/CustomComponents/Header";
-import SearchBar from "../../components/CustomComponents/SearchBar";
+import { useAppSelector } from "../../../hooks";
+import Header from "../../../components/CustomComponents/Header";
+import SearchBar from "../../../components/CustomComponents/SearchBar";
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import ProductCard from "../../components/CustomComponents/CardComponents";
+import { getProducts } from "../dashboardThunk";
+import LoadingScreen from "../../../components/CustomComponents/LoadingScreen";
+import ProductCard from "../../../components/CustomComponents/CardComponents";
 
 
 export const categories = [
@@ -81,79 +77,36 @@ const data = [
 
 
 const Home = () => {
-    const { token } = useAppSelector(state => state.auth);
+    const { productData } = useAppSelector(state => state?.dashboard);
     const dispatch = useDispatch()
-    const [uploadImage, setUploadImage] = useState({})
-    const [productData, setProductData] = useState([])
-
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        // _getProductList()
+        _getProductData()
+        return () => { }
     }, [])
 
-    const _getProductList = async () => {
+    const _getProductData = async () => {
         try {
-            const response = await dispatch(getProducts()).unwrap();
-            if (response?.status === 200) {
-                setProductData(response?.data)
-            }
+            setLoading(true)
+            await dispatch(getProducts()).unwrap()
         } catch (error) {
-            console.log("errorerror", error)
-        }
-    }
-
-    const logoutHandler = () => {
-        dispatch(logout());
-        reset("Login")
-    }
-
-    const uploadImageHandler = () => {
-        ImagePicker.openPicker({
-            width: 300,
-            height: 400,
-            cropping: true,
-        }).then((image) => {
-            setUploadImage(image);
-        });
-    }
-
-    const addImage = async () => {
-        const formData = new FormData();
-        formData.append("name", "Samsungg");
-        formData.append("price", "10000");
-        formData.append("description", "Gaming mobile");
-        formData.append("image", {
-            uri: uploadImage?.path,
-            type: uploadImage?.mime,
-            name: uploadImage?.filename,
-        });
-        const data = await fetch("http://localhost:3000/api/products", {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${token}`,
-                // Content-Type manually mat set karo
-            },
-            body: formData,
-        });
-        const response = await data.json();
-        if (response?.product) {
-            _getProductList()
+            console.log("error", error)
+        } finally {
+            setLoading(false)
         }
     }
 
     const renderProductItem = useCallback(({ item }: any) => {
         return (
-            <AtomView style={{ height: 250, borderWidth: 1, marginBottom: 16, borderRadius: 12, padding: 12 }}>
-                <Image source={{ uri: item?.image }} style={{ width: "100%", height: "80%", borderRadius: 12 }} resizeMode="cover" />
-                <AtomText title={item?.name} />
-            </AtomView>
+            <ProductCard showWishList={true} item={item} />
         )
     }, [])
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <Header />
-            <AtomView style={styles.container}>
+            <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
                 <SearchBar
                     value={""}
                     onChangeText={() => { }}
@@ -211,59 +164,21 @@ const Home = () => {
                             ))
                         }
                     </View>
-                    <View style={{ marginTop: 16 }}>
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                marginBottom: 12
-                            }}>
-
-                            <Text
-                                style={{
-                                    fontSize: 14,
-                                    fontWeight: '700',
-                                }}>
-                                Best Picks for You
-                            </Text>
-
-                            <Text
-                                style={{
-                                    color: '#4F46E5',
-                                    fontWeight: '600',
-                                }}>
-                                View all
-                            </Text>
-                        </View>
-                        <FlatList
-                            horizontal
-                            data={[1, 2, 3, 4, 5, 6]}
-                            renderItem={({ item }) => (
-                                <ProductCard item={item} />
-                            )}
-                            showsHorizontalScrollIndicator={false}
-                        />
-                    </View>
                 </View>
-                {/* <ImageBackground
-                    source={ImgAssets.bg_auth}
-                    style={{ flex: 1, padding: 20 }}
-                    resizeMode="cover"
-                > */}
-                {/* <FlatList
-                    data={productData ?? []}
-                    renderItem={renderProductItem}
-                /> */}
-                {/* <AtomView style={styles.HomeContainer}>
-                    <Pressable onPress={uploadImageHandler}>
-                        <AtomText title={"Home"} fontSize={16} fontWeight="700" />
-                    </Pressable>
-                    <Pressable style={{ marginTop: 50 }} onPress={addImage}>
-                        <AtomText title={"Add product"} fontSize={16} fontWeight="700" />
-                    </Pressable>
-                </AtomView> */}
-                {/* </ImageBackground> */}
-            </AtomView>
+                <AtomView style={{ marginTop: 16, flex: 1 }}>
+                    {loading ? <LoadingScreen />
+                        :
+                        <FlatList
+                            numColumns={2}
+                            showsVerticalScrollIndicator={false}
+                            data={productData}
+                            keyExtractor={(item: any) => item._id?.toString()}
+                            renderItem={renderProductItem}
+                            scrollEnabled={false}
+                        />
+                    }
+                </AtomView>
+            </ScrollView>
         </SafeAreaView>
 
     );
@@ -274,7 +189,8 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff",
         padding: 15,
-        paddingTop: 0
+        paddingTop: 0,
+        marginBottom: 50
     },
     HomeContainer: {
         justifyContent: "flex-end",

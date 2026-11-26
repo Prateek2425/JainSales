@@ -42,7 +42,7 @@ const SignUp = () => {
                 ).unwrap();
                 if (response?.status === 201) {
                     setLoading(false)
-                    navigate('Home');
+                    navigate('DrawerNavigator');
                 } else {
                     setLoading(false)
                     setLoginError("Email already exists");

@@ -1,10 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { getProducts } from './dashboardThunk.ts';
+import { getProducts, orderByUser, productByVendor } from './dashboardThunk.ts';
 import { ProductState } from '../../types.ts';
 
 const initialState: ProductState = {
-    productData: null,
+    orderByUserData: [],
+    productData: [],
+    productByVendorData: [],
     loading: false,
     error: null,
     success: false,
@@ -17,18 +19,16 @@ const dashboardSlice = createSlice({
 
     extraReducers: builder => {
         builder
-            .addCase(getProducts.pending, state => {
-                state.loading = true;
-            })
             .addCase(getProducts.fulfilled, (state, action) => {
-                console.log("actionaction", action?.payload)
+                state.productData = action?.payload?.data?.data
                 state.loading = false;
-                // state.productData = action.payload?.data?.user;
                 state.success = true;
             })
-            .addCase(getProducts.rejected, (state, action: any) => {
-                state.loading = false;
-                state.error = action.payload;
+            .addCase(productByVendor.fulfilled, (state, action) => {
+                state.productByVendorData = action?.payload?.data?.products;
+            })
+            .addCase(orderByUser.fulfilled, (state, action) => {
+                state.orderByUserData = action?.payload?.orders;
             })
     },
 });

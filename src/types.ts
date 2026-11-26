@@ -13,8 +13,20 @@ export interface AuthState {
 }
 
 export interface ProductState {
+    orderByUserData: any
     productData: any;
+    productByVendorData: any;
     loading: boolean;
     error: string | null;
     success: boolean;
+}
+
+export interface orderState {
+    orderListData: any
+}
+
+export interface ProductCardProps {
+    item: any,
+    showWishList: boolean,
+    ownProduct?: boolean
 }

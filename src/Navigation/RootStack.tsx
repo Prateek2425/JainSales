@@ -8,15 +8,22 @@ import AtomStatusBar from '../components/atoms/AtomStatusBar';
 import Login from '../screen/auth/Login';
 import SignUp from '../screen/auth/SignUp';
 import ResetPassword from '../screen/auth/ResetPassword';
-import Home from '../screen/dashboard/Home';
 import { useAppSelector } from '../hooks';
-import BottomTabs from './BottomTabs';
-import Profile from '../screen/profile';
+import DrawerNavigator from './DrawerNavigator';
+import AddProductScreen from '../screen/dashboard/Products/AddProductScreen';
+import ProductDetailScreen from '../screen/dashboard/Home/ProductDetailsScreen';
+import ProductByCategories from '../screen/dashboard/Categories/ProductByCategories';
+import WishListScreen from '../screen/dashboard/WishListScreen';
+import CartScreen from '../screen/dashboard/Cart';
+import OrderSuccessReview from '../screen/dashboard/Cart/OrderSuccessReview';
+import MyOrdersScreen from '../screen/dashboard/OrderScreen';
+import OrderByUser from '../screen/dashboard/Products/OrderByUser';
 
 const Stack = createNativeStackNavigator();
 
 const RootStack = () => {
-    const { token } = useAppSelector(state => state.auth);
+    const { token, success } = useAppSelector(state => state.auth);
+    const initialRouteName = success ? "DrawerNavigator" : "Login"
 
     return (
         <NavigationContainer ref={navigationRef}>
@@ -25,7 +32,7 @@ const RootStack = () => {
             )}
 
             <Stack.Navigator
-                initialRouteName={token !== null ? "BottomTabs" : "Login"}
+                initialRouteName={initialRouteName}
                 screenOptions={{
                     headerShown: false,
                 }}
@@ -39,16 +46,44 @@ const RootStack = () => {
                     component={SignUp}
                 />
                 <Stack.Screen
+                    name="DrawerNavigator"
+                    component={DrawerNavigator}
+                />
+                <Stack.Screen
                     name="ResetPassword"
                     component={ResetPassword}
                 />
                 <Stack.Screen
-                    name="BottomTabs"
-                    component={BottomTabs}
+                    name="AddProductScreen"
+                    component={AddProductScreen}
                 />
                 <Stack.Screen
-                    name="Home"
-                    component={Home}
+                    name="ProductDetailScreen"
+                    component={ProductDetailScreen}
+                />
+                <Stack.Screen
+                    name="ProductByCategories"
+                    component={ProductByCategories}
+                />
+                <Stack.Screen
+                    name="WishListScreen"
+                    component={WishListScreen}
+                />
+                <Stack.Screen
+                    name="CartScreen"
+                    component={CartScreen}
+                />
+                <Stack.Screen
+                    name="OrderSuccessReview"
+                    component={OrderSuccessReview}
+                />
+                 <Stack.Screen
+                    name="MyOrdersScreen"
+                    component={MyOrdersScreen}
+                />
+                  <Stack.Screen
+                    name="OrderByUser"
+                    component={OrderByUser}
                 />
             </Stack.Navigator>
 

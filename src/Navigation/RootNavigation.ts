@@ -8,6 +8,24 @@ export type RootStackParamList = {
     SignUp: undefined;
     Home: undefined;
     ForgotPassword: undefined;
+    MainTabs: undefined;
+    DrawerNavigator: undefined;
+    AddProductScreen: undefined;
+    WishListScreen: undefined;
+    CartScreen: undefined;
+    OrderByUser: undefined
+    OrderSuccessReview: {
+        orderData: any
+    };
+    MyOrdersScreen: undefined;
+    ProductByCategories: {
+        Category: string
+    }
+    ProductDetailScreen: {
+        productItem: any,
+        showWishList: boolean,
+        ownProduct: boolean
+    };
     VerifyOtp: {
         email: string;
     };

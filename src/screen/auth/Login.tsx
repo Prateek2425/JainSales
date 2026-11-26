@@ -12,6 +12,7 @@ import ForgotPassword from "./ForgotPassword";
 import VarifiedOtp from "./VerifiedOtp";
 import { forgotPassword, loginUser, verifyOtp } from "./authThunk";
 import { useAppDispatch } from "../../hooks";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = () => {
     const dispatch = useAppDispatch();
@@ -32,46 +33,27 @@ const Login = () => {
     };
 
     const onLoginHandler = async () => {
-        Linking.openURL("https://demo.mindscroll.com/password/reset/fd48be7da3e1800392887f160fb6acf782d9eedf625671c4914eec9879b4763e")
-        // Linking.openURL("https://stanleylifestyles.mindscroll.com/stanleylifestyles/sso/logon?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1pY2hlYWxtYWtpNTVAZ21haWwuY29tIiwiZG9tYWluQ29kZSI6InN0YW5sZXkiLCJjb21wYW55RG9tYWluQ29kZSI6InN0YW5sZXkiLCJMb2dpblR5cGUiOiIxIiwiSW9UIjoiTSIsIkVtcGxveWVlSWQiOiIwIiwiVXNlckxvZ09uSWQiOiIiLCJQYXNzd29yZCI6IiIsIklzRmlyc3RUaW1lTG9nT24iOiIiLCJJc1RlbXBQYXNzd29yZCI6IkZhbHNlIiwiVXNlckxhbmd1YWdlIjoiMSIsIlVzZXJUaW1lWm9uZSI6IiIsIkxvZ09uSWQiOiI1MDIiLCJVc2VyTmFtZSI6Ik0gTWljaGVhbCBSYWoiLCJDbGllbnRCYXNlUGF0aCI6Imh0dHBzOi8vYXBwLmhyb25lLmNsb3VkIiwiQ2hhdEFwcElkIjoiIiwiR2F0ZXdheUN1c3RvbWVyQ29kZSI6IiIsIlVpZCI6IjI3MDUzMTMiLCJSZWZyZXNoRXhwaXJ5IjoiMTAwODAiLCJFbWFpbElkIjoiIiwiTW9iaWxlTm8iOiIiLCJJc01mYUFjdGl2ZSI6Ik4iLCJCcm93c2VySWQiOiIiLCJEZXZpY2VUeXBlIjoiTSIsImxvZ2luVXNlciI6IjEwMDQ3NCIsIkxvZ09uVHlwZSI6IjEiLCJJc0F1dGhlbnRpY2F0ZSI6IlRydWUiLCJNZXNzYWdlIjoiIiwiRG9tYWluQ29kZSI6InN0YW5sZXkiLCJDb21wYW55RG9tYWluQ29kZSI6IiIsIlNpbmdsZVNpZ25PbklkIjoiIiwiSW5zdGFuY2VJZCI6IjMwMTQ5Njg4IiwibmJmIjoxNzg3MTMzOTM0LCJleHAiOjE3ODczNDk5MzQsImlzcyI6Imh0dHBzOi8vaHJvbmVhdXRoYXBpLmhyb25lLmNsb3VkLyIsImF1ZCI6IjA5OTE1M2MyNjI1OTQ5YmM4ZWNiM2U4NWUwM2Y1NjIzIn0.IjFpij4nwC8If0o3WawNc85DdkHgsh654VcBcZJRtDEhuY6wxv3aysJBKfZvwR0qEB4UYxuf_S7EBuzFJ5xH18VI-nTqcmK7enBMVL9TBkLOShCsg8oW09YqiOuRT2tTlLmeYYPX0m0B1A391CExPzfMxmz7lUUftAcBFO2lWs1qVD-2h6TND17nwawBm1RoZKjycWHxRkQUv7rAIzYAqfyLbNQuHPu4IinR-LicSdkC5UVDlaeUIVGhfkUpx7OmHKDaw2QX1a5LK18BqKN8XOG_HcZT3EUB3SdZ8EEY3_LI3lircHvqgDA96x_k6LnyrBe_cuQ6XHtyCKmkX64YbA");
-
-        // Linking.openURL("https://stanleylifestyles.mindscroll.com/login?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1pY2hlYWxtYWtpNTVAZ21haWwuY29tIiwiZG9tYWluQ29kZSI6InN0YW5sZXkiLCJjb21wYW55RG9tYWluQ29kZSI6InN0YW5sZXkiLCJMb2dpblR5cGUiOiIxIiwiSW9UIjoiTSIsIkVtcGxveWVlSWQiOiIwIiwiVXNlckxvZ09uSWQiOiIiLCJQYXNzd29yZCI6IiIsIklzRmlyc3RUaW1lTG9nT24iOiIiLCJJc1RlbXBQYXNzd29yZCI6IkZhbHNlIiwiVXNlckxhbmd1YWdlIjoiMSIsIlVzZXJUaW1lWm9uZSI6IiIsIkxvZ09uSWQiOiI1MDIiLCJVc2VyTmFtZSI6Ik0gTWljaGVhbCBSYWoiLCJDbGllbnRCYXNlUGF0aCI6Imh0dHBzOi8vYXBwLmhyb25lLmNsb3VkIiwiQ2hhdEFwcElkIjoiIiwiR2F0ZXdheUN1c3RvbWVyQ29kZSI6IiIsIlVpZCI6IjI3MDUzMTMiLCJSZWZyZXNoRXhwaXJ5IjoiMTAwODAiLCJFbWFpbElkIjoiIiwiTW9iaWxlTm8iOiIiLCJJc01mYUFjdGl2ZSI6Ik4iLCJCcm93c2VySWQiOiIiLCJEZXZpY2VUeXBlIjoiTSIsImxvZ2luVXNlciI6IjEwMDQ3NCIsIkxvZ09uVHlwZSI6IjEiLCJJc0F1dGhlbnRpY2F0ZSI6IlRydWUiLCJNZXNzYWdlIjoiIiwiRG9tYWluQ29kZSI6InN0YW5sZXkiLCJDb21wYW55RG9tYWluQ29kZSI6IiIsIlNpbmdsZVNpZ25PbklkIjoiIiwiSW5zdGFuY2VJZCI6IjMwMTQ5Njg4IiwibmJmIjoxNzg3MTMzOTM0LCJleHAiOjE3ODczNDk5MzQsImlzcyI6Imh0dHBzOi8vaHJvbmVhdXRoYXBpLmhyb25lLmNsb3VkLyIsImF1ZCI6IjA5OTE1M2MyNjI1OTQ5YmM4ZWNiM2U4NWUwM2Y1NjIzIn0.IjFpij4nwC8If0o3WawNc85DdkHgsh654VcBcZJRtDEhuY6wxv3aysJBKfZvwR0qEB4UYxuf_S7EBuzFJ5xH18VI-nTqcmK7enBMVL9TBkLOShCsg8oW09YqiOuRT2tTlLmeYYPX0m0B1A391CExPzfMxmz7lUUftAcBFO2lWs1qVD-2h6TND17nwawBm1RoZKjycWHxRkQUv7rAIzYAqfyLbNQuHPu4IinR-LicSdkC5UVDlaeUIVGhfkUpx7OmHKDaw2QX1a5LK18BqKN8XOG_HcZT3EUB3SdZ8EEY3_LI3lircHvqgDA96x_k6LnyrBe_cuQ6XHtyCKmkX64YbA");
-
-        // const url = "https://stanleylifestyles.mindscroll.com/stanleylifestyles/sso/logon?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1pY2hlYWxtYWtpNTVAZ21haWwuY29tIiwiZG9tYWluQ29kZSI6InN0YW5sZXkiLCJjb21wYW55RG9tYWluQ29kZSI6InN0YW5sZXkiLCJMb2dpblR5cGUiOiIxIiwiSW9UIjoiTSIsIkVtcGxveWVlSWQiOiIwIiwiVXNlckxvZ09uSWQiOiIiLCJQYXNzd29yZCI6IiIsIklzRmlyc3RUaW1lTG9nT24iOiIiLCJJc1RlbXBQYXNzd29yZCI6IkZhbHNlIiwiVXNlckxhbmd1YWdlIjoiMSIsIlVzZXJUaW1lWm9uZSI6IiIsIkxvZ09uSWQiOiI1MDIiLCJVc2VyTmFtZSI6Ik0gTWljaGVhbCBSYWoiLCJDbGllbnRCYXNlUGF0aCI6Imh0dHBzOi8vYXBwLmhyb25lLmNsb3VkIiwiQ2hhdEFwcElkIjoiIiwiR2F0ZXdheUN1c3RvbWVyQ29kZSI6IiIsIlVpZCI6IjI3MDUzMTMiLCJSZWZyZXNoRXhwaXJ5IjoiMTAwODAiLCJFbWFpbElkIjoiIiwiTW9iaWxlTm8iOiIiLCJJc01mYUFjdGl2ZSI6Ik4iLCJCcm93c2VySWQiOiIiLCJEZXZpY2VUeXBlIjoiTSIsImxvZ2luVXNlciI6IjEwMDQ3NCIsIkxvZ09uVHlwZSI6IjEiLCJJc0F1dGhlbnRpY2F0ZSI6IlRydWUiLCJNZXNzYWdlIjoiIiwiRG9tYWluQ29kZSI6InN0YW5sZXkiLCJDb21wYW55RG9tYWluQ29kZSI6IiIsIlNpbmdsZVNpZ25PbklkIjoiIiwiSW5zdGFuY2VJZCI6IjMwMTQ5Njg4IiwibmJmIjoxNzg3MTMzOTM0LCJleHAiOjE3ODczNDk5MzQsImlzcyI6Imh0dHBzOi8vaHJvbmVhdXRoYXBpLmhyb25lLmNsb3VkLyIsImF1ZCI6IjA5OTE1M2MyNjI1OTQ5YmM4ZWNiM2U4NWUwM2Y1NjIzIn0.IjFpij4nwC8If0o3WawNc85DdkHgsh654VcBcZJRtDEhuY6wxv3aysJBKfZvwR0qEB4UYxuf_S7EBuzFJ5xH18VI-nTqcmK7enBMVL9TBkLOShCsg8oW09YqiOuRT2tTlLmeYYPX0m0B1A391CExPzfMxmz7lUUftAcBFO2lWs1qVD-2h6TND17nwawBm1RoZKjycWHxRkQUv7rAIzYAqfyLbNQuHPu4IinR-LicSdkC5UVDlaeUIVGhfkUpx7OmHKDaw2QX1a5LK18BqKN8XOG_HcZT3EUB3SdZ8EEY3_LI3lircHvqgDA96x_k6LnyrBe_cuQ6XHtyCKmkX64YbA";
-
-        // try {
-        //     const canOpen = await Linking.canOpenURL(url);
-
-        //     console.log("canOpenURL:", canOpen);
-
-        //     if (canOpen) {
-        //         const result = await Linking.openURL(url);
-        //         console.log("openURL result:", result);
-        //     }
-        // } catch (error) {
-        //     console.log("Linking Error:", error);
-        // }
-
-
-        // if (validateEmail(email) && password.length > 0) {
-        //     setLoginError("");
-        //     setLoading(true)
-        //     try {
-        //         const response = await dispatch(
-        //             loginUser({ email, password }),
-        //         ).unwrap();
-        //         if (response?.status === 200) {
-        //             setLoading(false)
-        //             navigate('Home');
-        //         }
-        //     } catch (error) {
-        //         setLoginError(String(error))
-        //         setLoading(false)
-        //     }
-        // } else {
-        //     setLoading(false)
-        //     setLoginError("Invalid Email or Password");
-        // }
+        if (validateEmail(email) && password.length > 0) {
+            setLoginError("");
+            setLoading(true)
+            try {
+                const response = await dispatch(
+                    loginUser({ email, password }),
+                ).unwrap();
+                if (response?.status === 200) {
+                    console.log("response?.data?.token", response?.data?.token)
+                    await AsyncStorage.setItem("token", response?.data?.token);
+                    setLoading(false)
+                    navigate('DrawerNavigator');
+                }
+            } catch (error) {
+                setLoginError(String(error))
+                setLoading(false)
+            }
+        } else {
+            setLoading(false)
+            setLoginError("Invalid Email or Password");
+        }
     };
 
     const onForgotPassword = async () => {

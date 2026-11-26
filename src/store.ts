@@ -7,11 +7,14 @@ import {
 
 import authReducer from './screen/auth/authSlice';
 import dashboardReducer from './screen/dashboard/dashboardSlice';
+import wishListReducer from './screen/dashboard/WishListScreen/wishlistSlice';
+
 
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  dashboard: dashboardReducer
+  dashboard: dashboardReducer,
+  wishList: wishListReducer
 });
 
 const persistConfig = {
@@ -19,7 +22,7 @@ const persistConfig = {
   storage: AsyncStorage,
 
   // Persist only auth
-  whitelist: ['auth'],
+  whitelist: ['auth', 'wishList'],
 };
 
 const persistedReducer = persistReducer(

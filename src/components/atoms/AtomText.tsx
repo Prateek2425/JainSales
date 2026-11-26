@@ -9,6 +9,7 @@ import {
     View,
     ViewStyle,
 } from 'react-native';
+import { Theme } from '../../theme/constants';
 
 // import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -43,7 +44,7 @@ interface TextAtomProps extends TextProps {
 
 const AtomText: React.FC<TextAtomProps> = ({
     title,
-    color = '#000',
+    color = Theme.colors.text.textcolor,
     fontSize = 16,
     fontWeight = '400',
     fontFamily = 'Lato-Regular',
